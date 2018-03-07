@@ -1,0 +1,89 @@
+import React from 'react';
+
+const Races = (props) => {
+    return (
+        <div>
+            <h3>Here are some races near {props.location}</h3>
+            <h3>Choose a new location</h3>
+            <form>
+
+                <select value={props.location} onChange={props.handleChange}>
+                    <option value="AL">Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value="CO">Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <option value="DE">Delaware</option>
+                    <option value="DC">District Of Columbia</option>
+                    <option value="FL">Florida</option>
+                    <option value="GA">Georgia</option>
+                    <option value="HI">Hawaii</option>
+                    <option value="ID">Idaho</option>
+                    <option value="IL">Illinois</option>
+                    <option value="IN">Indiana</option>
+                    <option value="IA">Iowa</option>
+                    <option value="KS">Kansas</option>
+                    <option value="KY">Kentucky</option>
+                    <option value="LA">Louisiana</option>
+                    <option value="ME">Maine</option>
+                    <option value="MD">Maryland</option>
+                    <option value="MA">Massachusetts</option>
+                    <option value="MI">Michigan</option>
+                    <option value="MN">Minnesota</option>
+                    <option value="MS">Mississippi</option>
+                    <option value="MO">Missouri</option>
+                    <option value="MT">Montana</option>
+                    <option value="NE">Nebraska</option>
+                    <option value="NV">Nevada</option>
+                    <option value="NH">New Hampshire</option>
+                    <option value="NJ">New Jersey</option>
+                    <option value="NM">New Mexico</option>
+                    <option value="NY">New York</option>
+                    <option value="NC">North Carolina</option>
+                    <option value="ND">North Dakota</option>
+                    <option value="OH">Ohio</option>
+                    <option value="OK">Oklahoma</option>
+                    <option value="OR">Oregon</option>
+                    <option value="PA">Pennsylvania</option>
+                    <option value="RI">Rhode Island</option>
+                    <option value="SC">South Carolina</option>
+                    <option value="SD">South Dakota</option>
+                    <option value="TN">Tennessee</option>
+                    <option value="TX">Texas</option>
+                    <option value="UT">Utah</option>
+                    <option value="VT">Vermont</option>
+                    <option value="VA">Virginia</option>
+                    <option value="WA">Washington</option>
+                    <option value="WV">West Virginia</option>
+                    <option value="WI">Wisconsin</option>
+                    <option value="WY">Wyoming</option>
+                </select>
+            </form>
+            <ul className="raceList">
+                {
+                    props.races.map(race => {
+                        return (
+                            <li className="raceItem" key={race.race.race_id}>
+                                <ul>
+                                    <li><img src={race.race.logo_url} alt="logo"></img></li>
+                                    <li><h3>{race.race.name}</h3></li>
+                                    <li>{race.race.address.city}, {race.race.address.state}</li>
+                                    <li>{race.race.next_date}</li>
+                                    <li><a href={race.race.url} className="btn link">Learn More</a></li>
+                                    <li onClick={() => props.raceHandler(race.race.next_date)}
+                                        className="btn important">Create a Training Plan
+                                    </li>
+                                </ul>
+                            </li>
+                        )
+                    })
+                }
+            </ul>
+        </div>
+    );
+};
+
+export default Races;
+
