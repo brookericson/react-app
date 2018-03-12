@@ -2,12 +2,11 @@ import React from 'react';
 
 const SignUp = (props) => {
     return (
-        <form>
-            <label for="username">User Name</label>
-            <input type="text" name="username"></input>
-            <label for="username">password</label>
-            <input type="text" name="password"></input>
-            <input type="submit" value="Sign Up"></input>
+        <form className="login">
+            <h1>SIGN UP</h1>
+            <input type="email" name="email" placeholder="email" required></input>
+            <input type="text" name="password" placeholder="password" required></input>
+            <button btnType="Success" className="btn-lrg action">Sign Up</button>
         </form>
     );
 };

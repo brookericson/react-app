@@ -3,22 +3,19 @@ import React from 'react';
 const Header = (props) => {
     let loginButton = null;
     if(props.loginState){
-        loginButton = <li onClick={() => props.toggleLogout()}>Log Out</li>;
+        loginButton = <li onClick={() => props.toggleLogout()}>LOG OUT</li>;
     }
     else{
-        loginButton = <li onClick={() => props.toggleLogin()}>Log In</li>;
+        loginButton = <li onClick={() => props.toggleLogin()}>LOG IN</li>;
     }
     return (
         <header>
             <nav>
-                <div>
-                    <img src="logo.png" alt="logo">
-                    </img>
-                </div>
-            <ul>
+                <div className="logo">MT</div>
+            <ul className="nav-list-container">
                 {loginButton}
-                <li onClick={() => props.toggleList()}>Race List</li>
-                <li onClick={() => props.togglePlan()}>Training Plan</li>
+                <li onClick={() => props.toggleList()}>RACES</li>
+                <li onClick={() => props.togglePlan()}>TRAINING PLAN</li>
             </ul>
             </nav>
         </header>
