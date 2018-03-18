@@ -76,20 +76,20 @@ label {
   justify-content: space-evenly; }
 
 .grid-box {
-  background-color: white;
+  background-color: #0000001f;
   box-shadow: 0px 0px 3px 1px lightgray;
   width: 100%;
   margin: 5px 5px 15px 5px;
   max-width: 375px; }
 
 .grid-box-items li:nth-child(1n +2) {
-  background: #0000001f;
   padding-left: 5px;
   padding-right: 5px; }
 
 .grid-image {
   height: 250px;
-  display: flex; }
+  display: flex;
+  background-color: white; }
 
 img {
   width: auto;
@@ -125,8 +125,15 @@ img {
     background: rgba(251, 88, 80, 0.43); }
 
 .navigate {
-  background-color: #6e6eda;
+  background-color: lightgray;
   color: white; }
+
+.link {
+  margin: 5px; }
+
+.link a {
+  color: #6e6eda;
+  margin: 0; }
 
 table {
   box-shadow: 0px 0px 3px 1px lightgray;

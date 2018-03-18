@@ -106,7 +106,7 @@ label{
   justify-content: space-evenly;
 }
 .grid-box {
-  background-color: white;
+  background-color: #0000001f;
   box-shadow: 0px 0px 3px 1px lightgray;
   width: 100%;
   margin: 5px 5px 15px 5px;
@@ -114,7 +114,6 @@ label{
 }
 
 .grid-box-items li:nth-child(1n +2){
-  background:#0000001f;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -122,6 +121,7 @@ label{
 .grid-image {
   height: 250px;
   display:flex;
+  background-color: white;
 }
 
 img {
@@ -167,8 +167,17 @@ img {
 }
 
 .navigate {
-  background-color: $secondary;
+  background-color: lightgray;
   color: white;
+}
+
+.link {
+  margin: 5px;
+}
+
+.link a{
+  color: $secondary;
+  margin:0;
 }
 
 

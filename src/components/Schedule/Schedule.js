@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Aux from '../../hoc/Auxilliary';
 import Week from './Week/Week';
 
-class Schedule extends Component {
-    render() {
+const Schedule = (props) => {
         return (
             <Aux>
             <div className="row-container">
-                <div className="btn-sm navigate">&#8701; Find a new schedule</div>
+                <div className="btn-sm navigate" onClick={props.toggleRaceList}>Find New Race</div>
                 <div className="btn-sm warning">Save this Schedule</div>
             </div>
+                <div>{props.message}</div>
             <table>
                 <tr>
                     <th>Week</th>
@@ -22,10 +22,10 @@ class Schedule extends Component {
                     <th>Sun</th>
                 </tr>
 
-                {this.props.scheduleItems.map((week, index) => {
+                {props.scheduleItems.map((week, index) => {
                     return (
                         <Week
-                            week={week.week}
+                            week={week[8]}
                             day1={week[1]}
                             day2={week[2]}
                             day3={week[3]}
@@ -33,7 +33,7 @@ class Schedule extends Component {
                             day5={week[5]}
                             day6={week[6]}
                             day7={week[7]}
-                            key={week.week}
+                            key={week[8]}
                         />
                     )
                 })}
@@ -42,7 +42,6 @@ class Schedule extends Component {
             </Aux>
 
         );
-    };
 }
 
 export default Schedule;
