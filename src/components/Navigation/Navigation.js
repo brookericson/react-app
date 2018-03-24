@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import SignOutButton from '../User/SignOut';
 import * as routes from '../../constants/routes';
@@ -22,16 +22,16 @@ const Navigation = (props, { authUser }) =>
 
     const NavigationAuth = () =>
         <ul className="nav-list-container">
-            <li><Link to={routes.LANDING}>RACE SEARCH</Link></li>
-            <li><Link to={routes.SCHEDULE}>TRAINING SCHEDULE</Link></li>
-            <li><Link to={routes.ACCOUNT}>ACCOUNT</Link></li>
+            <li><NavLink to={routes.LANDING}>RACE SEARCH</NavLink></li>
+            <li><NavLink to={routes.SCHEDULE}>TRAINING SCHEDULE</NavLink></li>
+            <li><NavLink to={routes.ACCOUNT}>ACCOUNT</NavLink></li>
             <li><SignOutButton /></li>
         </ul>
 
     const NavigationNonAuth = () =>
         <ul className="nav-list-container">
-            <li><Link to={routes.LANDING}>RACE SEARCH</Link></li>
-            <li><Link to={routes.SIGN_IN}>SIGN IN</Link></li>
+            <li><NavLink to={routes.LANDING}>RACE SEARCH</NavLink></li>
+            <li><NavLink to={routes.SIGN_IN}>SIGN IN</NavLink></li>
         </ul>
 
 export default Navigation;

@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import Aux from '../../hoc/Auxilliary';
 import Request from 'superagent';
-import Schedule from '../Schedule/Schedule';
-import firebase from '../../firebase/firebase';
+import * as routes from '../../constants/routes';
+import { Link } from 'react-router-dom';
 // import _ from 'lodash';
+import axios from 'axios';
 
 class Races extends Component {
     constructor(props) {
@@ -26,69 +27,20 @@ class Races extends Component {
         });
     }
 
-    raceListHandler = () => {
-        this.setState({
-            showRaceSearch: true,
-            showSchedule: false
-        })
-    }
 
     raceSelectedHandler = (date) => {
         const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-        const month = date.match(/^\d*(?=\/)/g);
+        const month = (date.match(/^\d*(?=\/)/g));
         const day = date.match(/\d*(?=\/\d{4})/g);
         const year = 2018;
-        const firstDate = new Date(year, month[0], day[0]);
+        const firstDate = new Date(year, month[0] - 1, day[0]);
         const secondDate = new Date();
 
         const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
 
         const numWeeks = Math.ceil(diffDays / 7);
 
-        if (numWeeks > 16 && numWeeks < 26) {
-            const scheduleItems = firebase.database().ref(numWeeks);
-            scheduleItems.on('value', (snapshot) => {
-                let items = snapshot.val();
-                this.setState({
-                    scheduleData: items,
-                    showSchedule: true,
-                    showRaceList: false,
-                    showRaceSearch: false,
-                    message: "Here is a " + numWeeks + "training plan"
-                });
-                console.log(this.state.scheduleData);
-            });
-        }
-        else if (numWeeks > 25){
-            const scheduleItems = firebase.database().ref(25);
-            scheduleItems.on('value', (snapshot) => {
-                const weeksDif = numWeeks - 25;
-                let items = snapshot.val();
-                this.setState({
-                    scheduleData: items,
-                    showSchedule: true,
-                    showRaceList: false,
-                    showRaceSearch: false,
-                    message: "25 Week Training Plan. Begin training plan in " + weeksDif + " weeks."
-                });
-                console.log(this.state.scheduleData);
-            });
-        }
-        else {
-            const scheduleItems = firebase.database().ref(16);
-            scheduleItems.on('value', (snapshot) => {
-                const weeksDiff = 16 - numWeeks;
-                let items = snapshot.val();
-                this.setState({
-                    scheduleData: items,
-                    showSchedule: true,
-                    showRaceList: false,
-                    showRaceSearch: false,
-                    message: "This race is only " + weeksDiff + " weeks away. Please only follow this schedule if you have already been training!"
-                });
-                console.log(this.state.scheduleData);
-            });
-        }
+        return numWeeks;
     };
 
     componentDidMount(){
@@ -98,18 +50,32 @@ class Races extends Component {
 
             const reverseGeoUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&key=AIzaSyBZ6EZRs2Iaa0Z0xij3i7Rqkk3G6y7h-8A";
             Request.get(reverseGeoUrl).then((response) => {
-                const userLocation = response.body.results[0].address_components[4].short_name;
+                let userLocation = response.body.results[0].address_components[4].short_name;
+                if (!userLocation || userLocation != "ID") {
+                    userLocation = "ID";
+                }
 
                 // const url = "https://runsignup.com/Rest/races/?format=json&events=T&race_headings=T&race_links=T&include_waiver=F&include_event_days=T&sort=date+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&state=" + userLocation + "&distance_units=M&api_key=bKueVsywo2rxTfZ7Ip2QSP44RR0HFGZz&api_secret=NS4x0tJWMQZpTDJGpkCihtdN0MX5vx5D";
                 const url = "https://runsignup.com/Rest/races/?format=json&events=T&race_headings=T&race_links=T&include_waiver=F&include_event_days=T&page=1&results_per_page=100&sort=date+ASC&start_date=today&only_partner_races=F&search_start_date_only=T&only_races_with_results=F&state=" + userLocation + "&min_distance=26&distance_units=M&api_key=bKueVsywo2rxTfZ7Ip2QSP44RR0HFGZz&api_secret=NS4x0tJWMQZpTDJGpkCihtdN0MX5vx5D";
 
-                    Request.get(url).then((response) => {
-                    this.setState({
-                        races: response.body.races,
-                        location: userLocation,
-                        showRaceList: true
+                Request.get(url).then((response) => {
+                        this.setState({
+                            races: response.body.races,
+                            location: userLocation,
+                            showRaceList: true
+                        });
+                        // });
+
+                        // axios.get(url, {
+                        //     proxy: {
+                        //         host: 'localhost',
+                        //         port: 3000
+                        // }
+                        // }).then(response => {
+                        //     console.log(response);
+                        // })
+                        // });
                     });
-                });
             });
         });
     }
@@ -199,6 +165,7 @@ class Races extends Component {
                 <ul className="grid">
                     {
                         this.state.races.map(race => {
+                            const numWeeks = this.raceSelectedHandler(race.race.next_date);
                             return (
                                 <li className="grid-box" key={race.race.race_id}>
                                     <ul className="grid-box-items">
@@ -209,9 +176,8 @@ class Races extends Component {
                                             <li>{race.race.address.city}, {race.race.address.state} &ndash; {race.race.next_date}</li>
                                         </a>
                                         <li>
-                                            <button onClick={() => this.raceSelectedHandler(race.race.next_date)}
-                                                    className="btn-lrg action">Create a Training Plan
-                                            </button>
+                                           <Link to={routes.SCHEDULE} params={{ id : numWeeks }}><button className="btn-lrg action">Create a Training Plan</button>
+                                            </Link>
                                         </li>
 
                                     </ul>
@@ -223,16 +189,10 @@ class Races extends Component {
             );
         }
 
-        let schedule = null;
-        if (this.state.showSchedule) {
-            schedule = <Schedule scheduleItems={this.state.scheduleData} toggleRaceList={this.raceListHandler} message={this.state.message}/>;
-        }
-
         return (
             <Aux>
                 {raceSearch}
                 {raceList}
-                {schedule}
             </Aux>
         );
     };
