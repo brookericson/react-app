@@ -2,24 +2,28 @@ import React from 'react';
 
 const week = (props) => {
     return (
-        <tr>
-            <td class="lrg-text">{props.week}</td>
-            <td><span>{props.day1}</span>
-            </td>
-            <td><span>{props.day2}</span>
-            </td>
-            <td><span>{props.day3}</span>
-            </td>
-            <td><span>{props.day4}</span>
-            </td>
-            <td><span>{props.day5}</span>
-            </td>
-            <td><span>{props.day6}</span>
-            </td>
-            <td><span>{props.day7}</span>
-            </td>
-        </tr>
-    );
+        props.data.map((week, index) => {
+                return (
+                <tr>
+                        <td className="lrg-text">{week.week}</td>
+                        <td><span>{week[1].workout}</span>
+                        </td>
+                        <td><span>{week[2].workout}</span>
+                        </td>
+                        <td><span>{week[3].workout}</span>
+                        </td>
+                        <td><span>{week[4].workout}</span>
+                        </td>
+                        <td><span>{week[5].workout}</span>
+                        </td>
+                        <td><span>{week[6].workout}</span>
+                        </td>
+                        <td><span>{week[7].workout}</span>
+                        </td>
+                </tr>
+                )
+        })
+    )
 };
 
 export default week;

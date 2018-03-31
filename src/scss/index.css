@@ -159,6 +159,22 @@ tr:nth-child(even) {
   font-size: 3em;
   font-weight: bold; }
 
+.hidden {
+  display: none; }
+
+.workout-description {
+  font-size: .95em; }
+
+input {
+  margin: 5px;
+  padding: 5px;
+  border: none;
+  border-radius: 15px;
+  position: relative; }
+
+#distance, #time {
+  width: 75px; }
+
 .login {
   background: lightgray;
   display: flex;

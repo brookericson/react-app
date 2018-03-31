@@ -10,6 +10,7 @@ import SignIn from '../components/User/SignIn';
 import SignUp from '../components/User/SignUp';
 import PasswordForgetPage from '../components/User/PasswordForget';
 import AccountPage from '../components/User/Accounts';
+import SavedSchedule from '../components/savedSchedule/SavedSchedule';
 
 import * as routes from '../constants/routes';
 import withAuthentication from '../components/User/withAuthentication';
@@ -44,8 +45,12 @@ const App = () =>
                         component={() => <AccountPage />}
                     />
                     <Route
-                        exact path={routes.SCHEDULE}
-                        component={() => <Schedule />}
+                        exact path={routes.SCHEDULE + "/:id/:name"}
+                        component={Schedule}
+                    />
+                    <Route
+                        exact path={routes.SAVED_SCHEDULE}
+                        component={SavedSchedule}
                     />
                 </div>
             </Router>;

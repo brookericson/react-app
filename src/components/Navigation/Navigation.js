@@ -23,7 +23,7 @@ const Navigation = (props, { authUser }) =>
     const NavigationAuth = () =>
         <ul className="nav-list-container">
             <li><NavLink to={routes.LANDING}>RACE SEARCH</NavLink></li>
-            <li><NavLink to={routes.SCHEDULE}>TRAINING SCHEDULE</NavLink></li>
+            <li><NavLink to={routes.SAVED_SCHEDULE}>TRAINING SCHEDULE</NavLink></li>
             <li><NavLink to={routes.ACCOUNT}>ACCOUNT</NavLink></li>
             <li><SignOutButton /></li>
         </ul>
