@@ -203,8 +203,28 @@ td {
   padding: 15px 0;
 }
 
+.cell-container {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+}
+
+.row-spacebetween {
+  display:flex;
+  justify-content: space-around;
+}
+
+.cell-update-container {
+  display: none;
+}
+
 tr:nth-child(even){
-  background: $secondary-hover;
+  background: #b7b7ff33;
+}
+
+td:nth-child(even){
+  border-right: 1px solid lightgray;
+  border-left: 1px solid lightgray;
 }
 .lrg-text {
   font-size: 3em;

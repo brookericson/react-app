@@ -10,7 +10,8 @@ class Schedule extends Component {
         super(props);
         this.state = {
             scheduleData: [],
-            message: ''
+            message: '',
+            weeks: false
         };
     }
 
@@ -40,7 +41,7 @@ class Schedule extends Component {
     componentDidMount() {
         const numWeeks = this.props.match.params.id;
         if (numWeeks > 16 && numWeeks < 26) {
-            const scheduleItems = firebase.database().ref(numWeeks);
+            const scheduleItems = firebase.database().ref("trainingPlan/" + numWeeks);
             scheduleItems.on('value', (snapshot) => {
                 let items = snapshot.val();
                 this.setState({
@@ -51,7 +52,7 @@ class Schedule extends Component {
             });
         }
         else if (numWeeks > 25){
-            const scheduleItems = firebase.database().ref(25);
+            const scheduleItems = firebase.database().ref("trainingPlan/" +25);
             scheduleItems.on('value', (snapshot) => {
                 const weeksDif = numWeeks - 25;
                 let items = snapshot.val();
@@ -63,12 +64,13 @@ class Schedule extends Component {
             });
         }
         else {
-            const scheduleItems = firebase.database().ref(16);
+            const scheduleItems = firebase.database().ref("trainingPlan/16");
             scheduleItems.on('value', (snapshot) => {
                 const weeksDiff = 16 - numWeeks;
                 let items = snapshot.val();
                 this.setState({
                     scheduleData: items,
+                    weeks: true,
                     message: "This race is only " + weeksDiff + " weeks away. Please only follow this schedule if you have already been training!"
                 });
                 console.log(this.state.scheduleData);
@@ -76,6 +78,21 @@ class Schedule extends Component {
         }
     }
     render() {
+        let weekView = null;
+        if (this.state.weeks){
+            weekView = (
+                <Aux>
+                {this.state.scheduleData.map((week, index) => {
+                    return (
+                        <Week
+                            data={week}
+                            key={index}
+                        />
+                    );
+                })};
+                </Aux>
+            )
+        }
         return (
             <Aux>
                 <div className="row-container">
@@ -96,14 +113,7 @@ class Schedule extends Component {
                 <th>Sun</th>
                 </tr>
 
-                {this.state.scheduleData.map((week, index) => {
-                    return (
-                        <Week
-                            data={week}
-                            key={index}
-                        />
-                    );
-                })}
+                {weekView}
                     </tbody>
                 </table>
             </Aux>

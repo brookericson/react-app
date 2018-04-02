@@ -152,8 +152,24 @@ td {
   width: 12.5%;
   padding: 15px 0; }
 
+.cell-container {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between; }
+
+.row-spacebetween {
+  display: flex;
+  justify-content: space-around; }
+
+.cell-update-container {
+  display: none; }
+
 tr:nth-child(even) {
-  background: rgba(120, 120, 238, 0.6); }
+  background: #b7b7ff33; }
+
+td:nth-child(even) {
+  border-right: 1px solid lightgray;
+  border-left: 1px solid lightgray; }
 
 .lrg-text {
   font-size: 3em;
@@ -173,7 +189,14 @@ input {
   position: relative; }
 
 #distance, #time {
-  width: 75px; }
+  width: 45px; }
+
+#submit-button {
+  width: 97%;
+  border-radius: 15px;
+  border: none;
+  padding: 5px;
+  margin: 5px 0; }
 
 .login {
   background: lightgray;

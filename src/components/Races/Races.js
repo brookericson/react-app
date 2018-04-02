@@ -3,7 +3,7 @@ import Aux from '../../hoc/Auxilliary';
 import Request from 'superagent';
 import * as routes from '../../constants/routes';
 import { Link } from 'react-router-dom';
-// import _ from 'lodash';
+import firebase from "../../firebase/firebase";
 
 class Races extends Component {
     constructor(props) {
@@ -42,37 +42,35 @@ class Races extends Component {
         return numWeeks;
     };
 
-    componentDidMount(){
-        navigator.geolocation.getCurrentPosition((position) => {
-            const lat = parseFloat(position.coords.latitude);
-            const lng = parseFloat(position.coords.longitude);
-
-            const reverseGeoUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&key=AIzaSyBZ6EZRs2Iaa0Z0xij3i7Rqkk3G6y7h-8A";
-            Request.get(reverseGeoUrl).then((response) => {
-                let userLocation = response.body.results[0].address_components[4].short_name;
-
-                // const url = "https://runsignup.com/Rest/races/?format=json&events=T&race_headings=T&race_links=T&include_waiver=F&include_event_days=T&sort=date+ASC&start_date=today&only_partner_races=F&search_start_date_only=F&only_races_with_results=F&state=" + userLocation + "&distance_units=M&api_key=bKueVsywo2rxTfZ7Ip2QSP44RR0HFGZz&api_secret=NS4x0tJWMQZpTDJGpkCihtdN0MX5vx5D";
-                const url = "https://runsignup.com/Rest/races/?format=json&events=T&race_headings=T&race_links=T&include_waiver=F&include_event_days=T&page=1&results_per_page=100&sort=date+ASC&start_date=today&only_partner_races=F&search_start_date_only=T&only_races_with_results=F&min_distance=26&distance_units=M&api_key=bKueVsywo2rxTfZ7Ip2QSP44RR0HFGZz&api_secret=NS4x0tJWMQZpTDJGpkCihtdN0MX5vx5D";
-
-                Request.get(url).then((response) => {
-                        this.setState({
-                            races: response.body.races,
-                            location: userLocation,
-                            showRaceList: true
-                        });
-                        console.log(JSON.stringify(this.state.races));
+    componentDidMount() {
+        // navigator.geolocation.getCurrentPosition((position) => {
+        //     const lat = parseFloat(position.coords.latitude);
+        //     const lng = parseFloat(position.coords.longitude);
+        //
+        //     const reverseGeoUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&key=AIzaSyBZ6EZRs2Iaa0Z0xij3i7Rqkk3G6y7h-8A";
+        //     Request.get(reverseGeoUrl).then((response) => {
+        //         userLocation = response.body.results[0].address_components[4].short_name;
+                const raceItems = firebase.database().ref("races/ID");
+                raceItems.on('value', (snapshot) => {
+                    const response = snapshot.val();
+                    this.setState({
+                        races: response,
+                        location: "ID",
+                        showRaceList: true
                     });
-            });
-        });
+                });
+            // });
+        // });
     }
 
     componentDidUpdate() {
         if (this.state.change === true) {
             const userLocation = this.state.location;
-            const url = "https://runsignup.com/Rest/races/?format=json&events=T&race_headings=T&race_links=T&include_waiver=F&include_event_days=T&page=1&results_per_page=100&sort=date+ASC&start_date=today&only_partner_races=F&search_start_date_only=T&only_races_with_results=F&state=" + userLocation + "&min_distance=26&distance_units=M&api_key=bKueVsywo2rxTfZ7Ip2QSP44RR0HFGZz&api_secret=NS4x0tJWMQZpTDJGpkCihtdN0MX5vx5D";
-            Request.get(url).then((response) => {
+            const raceItems = firebase.database().ref("races/" + userLocation);
+            raceItems.on('value', (snapshot) => {
+                const response = snapshot.val();
                 this.setState({
-                    races: response.body.races,
+                    races: response,
                     change: false
                 });
             });
@@ -151,18 +149,18 @@ class Races extends Component {
                 <ul className="grid">
                     {
                         this.state.races.map(race => {
-                            const numWeeks = this.raceSelectedHandler(race.race.next_date);
+                            const numWeeks = this.raceSelectedHandler(race.date);
                             return (
-                                <li className="grid-box" key={race.race.race_id}>
+                                <li className="grid-box" key={race.race_id}>
                                     <ul className="grid-box-items">
-                                        <a href={race.race.url}>
-                                            <li className="grid-image"><img src={race.race.logo_url} alt="logo"></img>
+                                        <a href={race.url}>
+                                            <li className="grid-image"><img src={race.logo_url} alt="logo"></img>
                                             </li>
-                                            <li className="top-padding-15"><strong>{race.race.name}</strong></li>
-                                            <li>{race.race.address.city}, {race.race.address.state} &ndash; {race.race.next_date}</li>
+                                            <li className="top-padding-15"><strong>{race.name}</strong></li>
+                                            <li>{race.city}, {this.state.location} &ndash; {race.date}</li>
                                         </a>
                                         <li>
-                                           <Link to={routes.SCHEDULE + "/" + numWeeks + "/" + race.race.name} ><button className="btn-lrg action">Create a Training Plan</button>
+                                           <Link to={routes.SCHEDULE + "/" + numWeeks + "/" + race.name} ><button className="btn-lrg action">Create a Training Plan</button>
                                             </Link>
                                         </li>
 
