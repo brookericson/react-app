@@ -130,7 +130,7 @@ label{
   flex-flow: row wrap;
   width: 100%;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
 }
 .grid-box {
   background-color: #0000001f;
@@ -148,15 +148,16 @@ label{
 }
 
 .grid-image {
-  height: 250px;
+  height: 200px;
   display:flex;
   background-color: white;
 }
 
 img {
   width:auto;
+  max-height: 100%;
   max-width: 100%;
-  margin: auto
+  margin: auto;
 }
 
 
