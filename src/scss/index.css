@@ -167,6 +167,7 @@ img {
   margin-left: 15px; }
 
 #message-display {
+  text-align: right;
   margin-bottom: 20px; }
 
 .smalltext {
