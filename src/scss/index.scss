@@ -8,9 +8,9 @@ $body: 'Open Sans', sans-serif;
 $primary: #a239ca;
 $primary-hover: #BB72DB;
 $secondary: #6e6eda;
-$secondary-hover: rgba(120, 120, 238, 0.6);
-$background: whitesmoke;
-$black: #0e0b16;
+$secondary-hover: rgba(132, 132, 255, 0.76);
+$background:  rgba(197, 197, 197, 0.13);
+$black: rgba(14, 11, 22, 0.78);
 
 //layout mixins
 
@@ -24,12 +24,31 @@ $black: #0e0b16;
   box-sizing: border-box;
 }
 
+html{
+  margin:0;
+  padding:0;
+  height: 100%;
+}
+
 body {
   font-family: $body;
   background-color: $background;
   margin:0;
   color: $black;
+  height: 100%;
+}
+ #root {
+   height: 100%;
+ }
+.container {
+  min-height: 100%;
+  position: relative;
+}
+
+main {
+  height: 100%;
   padding: 15px;
+  padding-bottom: 75px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -39,6 +58,7 @@ h1, h2, h3, h4, h5, h6 {
 a {
   text-decoration: none;
   color: black;
+  cursor: pointer;
 }
 
 ul {
@@ -58,40 +78,46 @@ li {
 nav {
   @include flex-display(row, space-between);
   font-family: $headings;
-  height: 100%;
+  align-items: center;
+  height: 75px;
+  box-shadow: 0 0 3px 1px lightgray;
+  padding: 0 15px;
+  background-color: white;
+  width: 100%;
+  margin-bottom: 25px;
+  color:$black;
 }
 
-.logo {
+#logo {
   font-family:$headings;
   font-weight: bolder;
-  padding: 5px;
-  height: 100%;
-  width: auto;
-  border: solid black 5px;
+  font-size: 1.4em;
 }
 
 .nav-list-container {
-  flex: 0 1 auto;
   @include flex-display(row, flex-end);
   align-items: center;
 }
+
 .nav-list-container li {
   padding: 0 15px;
   border-radius: 5px;
 }
-.nav-list-container  li:hover {
+
+.nav-list-container a {
+ color: black;
+}
+
+.nav-list-container a:hover {
   color: $secondary;
-  font-weight: bold;
 }
 
 //Races
 
 .row-container {
-  @include flex-display(row, space-between);
+  @include flex-display(row, flex-start);
   align-items: center;
-  margin: 15px 0;
   padding: 0 0 5px 0;
-  border-bottom: solid black 2px;
   font-size: .8em;
 }
 
@@ -103,19 +129,22 @@ label{
   display: flex;
   flex-flow: row wrap;
   width: 100%;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 .grid-box {
   background-color: #0000001f;
   box-shadow: 0px 0px 3px 1px lightgray;
   width: 100%;
-  margin: 5px 5px 15px 5px;
-  max-width: 375px;
+  margin-bottom: 25px;
 }
+
+
 
 .grid-box-items li:nth-child(1n +2){
   padding-left: 5px;
   padding-right: 5px;
+  padding-bottom: 10px;
 }
 
 .grid-image {
@@ -140,6 +169,7 @@ img {
    margin: 15px 0;
    width: 100%;
    max-width: 250px;
+  cursor:pointer;
  }
 
 .btn-sm {
@@ -148,6 +178,7 @@ img {
   border: none;
   padding: 5px 15px;
   margin: 5px;
+  cursor:pointer;
 }
 
 .action {
@@ -171,6 +202,10 @@ img {
   color: white;
 }
 
+.navigation:hover {
+  background: $secondary-hover;
+}
+
 .link {
   margin: 5px;
 }
@@ -180,9 +215,23 @@ img {
   margin:0;
 }
 
+//message display
+.message-display {
+  font-weight: bold;
+  margin-left: 15px;
+}
+
+#message-display {
+
+  margin-bottom: 20px;
+}
+
 
 //Schedule
-
+.smalltext {
+  font-size: .6em;
+  margin-right: 5px;
+}
 table {
   box-shadow: 0px 0px 3px 1px lightgray;
   background: white;
@@ -193,39 +242,101 @@ table {
 }
 
 th{
-  background-color: black;
-  color:white;
+  background-color: $secondary-hover;
   padding: 9px 0;
 }
 
 td {
+   width: 12.5%;
+ }
+
+.top-table {
+  font-family: $headings;
+
+}
+
+.top-table td:nth-child(n){
   width: 12.5%;
-  padding: 15px 0;
+  padding: 5px;
+  border: none;
+}
+
+
+.top-label{
+  background-color: #eeeeee;
 }
 
 .cell-container {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
+  min-height: 100px;
+}
+
+.cell-container strong {
+  font-size: 1.3em;
 }
 
 .row-spacebetween {
   display:flex;
   justify-content: space-around;
+  margin: 10px;
+  font-size: .95em;
 }
 
 .cell-update-container {
   display: none;
+  flex-flow:column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 10px 0;
+  position: relative;
+}
+
+.cell-update-container .row-container {
+  padding: 0;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+}
+
+.cell-update-container input {
+  width: 50px;
+  border-radius: 3px;
+  border: black solid 1px;
+}
+
+.cell-update-container textarea {
+  height: 1.5em;
+  border-radius: 3px;
+  border: black solid 1px;
+}
+
+
+.cell-update-container label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell-update-container button {
+  margin: 5px;
+  width: 40%;
+  padding: 5px;
 }
 
 tr:nth-child(even){
-  background: #b7b7ff33;
+  background: rgba(197, 197, 197, 0.13);
 }
 
 td:nth-child(even){
-  border-right: 1px solid lightgray;
-  border-left: 1px solid lightgray;
+  border-right: 1px solid black;
+  border-left: 1px solid black;
 }
+
+td:nth-child(8){
+  border-right: none;
+}
+
 .lrg-text {
   font-size: 3em;
   font-weight: bold;
@@ -235,16 +346,16 @@ td:nth-child(even){
   display: none;
 }
 
+.show-form {
+  display: flex;
+}
+
 .workout-description {
   font-size: .95em;
 }
 
 input {
   margin: 5px;
-  padding: 5px;
-  border: none;
-  border-radius: 15px;
-  position: relative;
 }
 
 #distance, #time {
@@ -259,6 +370,32 @@ input {
   margin: 5px 0;
 }
 
+#checkbox {
+  display: block;
+  border: solid black 1px;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  margin: 2px 2px 2px auto;
+}
+
+input[type=checkbox]{
+  display: none;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  display: block;
+}
+
+.container-spaceBetween{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+
+}
 
 
 //form
@@ -282,6 +419,21 @@ input {
   max-width: 250px;
 }
 
+//footer
+footer {
+  position: absolute;
+  width: 100%;
+  padding: 15px;
+  bottom: 0;
+  left: 0;
+  background: black;
+  color: white
+}
+
+//margin
+.margin-bottom-25 {
+  margin-bottom: 25px;
+}
 
 @media screen and (min-width: 600px) {
   .raceItem {
@@ -294,5 +446,15 @@ input {
     align-items: center;
     justify-content: center;
     margin: 10px 5px 0px 5px;
+  }
+
+  .grid-box {
+    background-color: #0000001f;
+    box-shadow: 0px 0px 3px 1px lightgray;
+    min-width: 250px;
+    max-width: 23%;
+    flex: 0 1 auto;
+    margin-bottom: 25px;
+    margin-right: 25px;
   }
 }

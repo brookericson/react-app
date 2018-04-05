@@ -29,17 +29,13 @@ class Races extends Component {
 
     raceSelectedHandler = (date) => {
         const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-        const month = (date.match(/^\d*(?=\/)/g));
-        const day = date.match(/\d*(?=\/\d{4})/g);
-        const year = 2018;
-        const firstDate = new Date(year, month[0] - 1, day[0]);
+        const firstDate = new Date(date);
         const secondDate = new Date();
-
         const diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime()) / (oneDay)));
 
-        const numWeeks = Math.ceil(diffDays / 7);
+        // const numWeeks = Math.ceil(diffDays / 7);
 
-        return numWeeks;
+        return diffDays;
     };
 
     componentDidMount() {
@@ -82,10 +78,8 @@ class Races extends Component {
         if(this.state.showRaceSearch){
             raceSearch = (
                 <div className="row-container">
-                    <span>Races Near: {this.state.location}</span>
-
                     <form className="">
-                        <label>Search by location</label>
+                        <label>Search Races by Location:</label>
                         <select value={this.state.location} onChange={this.handleChange}>
                             <option value="AL">Alabama</option>
                             <option value="AK">Alaska</option>
@@ -95,7 +89,6 @@ class Races extends Component {
                             <option value="CO">Colorado</option>
                             <option value="CT">Connecticut</option>
                             <option value="DE">Delaware</option>
-                            <option value="DC">District Of Columbia</option>
                             <option value="FL">Florida</option>
                             <option value="GA">Georgia</option>
                             <option value="HI">Hawaii</option>
@@ -149,7 +142,9 @@ class Races extends Component {
                 <ul className="grid">
                     {
                         this.state.races.map(race => {
-                            const numWeeks = this.raceSelectedHandler(race.date);
+                            const daysUntil = this.raceSelectedHandler(race.date);
+                            const date = new Date();
+                            const raceDate = new Date(race.date);
                             return (
                                 <li className="grid-box" key={race.race_id}>
                                     <ul className="grid-box-items">
@@ -159,10 +154,16 @@ class Races extends Component {
                                             <li className="top-padding-15"><strong>{race.name}</strong></li>
                                             <li>{race.city}, {this.state.location} &ndash; {race.date}</li>
                                         </a>
-                                        <li>
-                                           <Link to={routes.SCHEDULE + "/" + numWeeks + "/" + race.name} ><button className="btn-lrg action">Create a Training Plan</button>
-                                            </Link>
-                                        </li>
+                                        {(date > raceDate) ?
+                                            <span>* This race has already passed.</span> :
+                                            <li>
+                                                <Link to={routes.SCHEDULE + "/" + daysUntil + "/" + race.name}>
+                                                    <button disabled={date > raceDate} className="btn-sm action">Create
+                                                        a Training Plan
+                                                    </button>
+                                                </Link>
+                                            </li>
+                                        }
 
                                     </ul>
                                 </li>

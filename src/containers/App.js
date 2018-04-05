@@ -11,14 +11,15 @@ import SignUp from '../components/User/SignUp';
 import PasswordForgetPage from '../components/User/PasswordForget';
 import AccountPage from '../components/User/Accounts';
 import SavedSchedule from '../components/savedSchedule/SavedSchedule';
-
+import Footer from '../components/Navigation/Footer/Footer';
 import * as routes from '../constants/routes';
 import withAuthentication from '../components/User/withAuthentication';
 
 const App = () =>
             <Router>
-                <div>
+                <div className='container'>
                     <Navigation/>
+                    <main>
 
                     <Route
                         exact path={routes.LANDING}
@@ -52,6 +53,8 @@ const App = () =>
                         exact path={routes.SAVED_SCHEDULE}
                         component={SavedSchedule}
                     />
+                    </main>
+                    <Footer/>
                 </div>
             </Router>;
 

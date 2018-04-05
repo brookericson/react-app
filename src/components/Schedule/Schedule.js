@@ -18,35 +18,42 @@ class Schedule extends Component {
     writeScheduleToFirebase = () => {
         const trainingSchedule = this.state.scheduleData;
         const raceName = this.props.match.params.name;
+        const daysUntil = parseInt(this.props.match.params.id);
+        const date = new Date();
+        const newDate = date.setDate(date.getDate() + daysUntil);
+        const d = date.toLocaleDateString();
         const {
             history,
         } = this.props;
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
                const userID = user.uid;
-                firebase.database().ref("users/" + userID).set({
+                firebase.database().ref("users/" + userID).update({
                     race: raceName,
+                    startDate: d,
+                    totalMiles: 0,
+                    totalMins: 0,
                     trainingSchedule
                 });
-                history.push(routes.LANDING);
+                history.push(routes.SAVED_SCHEDULE);
             }
             else {
-                this.setstate = {
-                    message: 'You must sign in to save a training schedule!'
-                }
+                document.getElementById("message-display").innerHTML = "You must sign in to save a training plan";
             }
         });
     }
 
     componentDidMount() {
-        const numWeeks = this.props.match.params.id;
+        const daysUntil = this.props.match.params.id;
+        const numWeeks = Math.ceil(daysUntil / 7);
         if (numWeeks > 16 && numWeeks < 26) {
             const scheduleItems = firebase.database().ref("trainingPlan/" + numWeeks);
             scheduleItems.on('value', (snapshot) => {
                 let items = snapshot.val();
                 this.setState({
                     scheduleData: items,
-                    message: "Here is a " + numWeeks + "training plan"
+                    weeks: true,
+                    message: "This is a " + numWeeks + " training plan"
                 });
                 console.log(this.state.scheduleData);
             });
@@ -58,7 +65,8 @@ class Schedule extends Component {
                 let items = snapshot.val();
                 this.setState({
                     scheduleData: items,
-                    message: "25 Week Training Plan. Begin training plan in " + weeksDif + " weeks."
+                    weeks: true,
+                    message: "This is a 25 Week Training Plan. Begin training in " + weeksDif + " weeks."
                 });
                 console.log(this.state.scheduleData);
             });
@@ -66,12 +74,11 @@ class Schedule extends Component {
         else {
             const scheduleItems = firebase.database().ref("trainingPlan/16");
             scheduleItems.on('value', (snapshot) => {
-                const weeksDiff = 16 - numWeeks;
                 let items = snapshot.val();
                 this.setState({
                     scheduleData: items,
                     weeks: true,
-                    message: "This race is only " + weeksDiff + " weeks away. Please only follow this schedule if you have already been training!"
+                    message: "This race is only " + numWeeks + " weeks away. Follow this training plan ONLY if you have already been training!"
                 });
                 console.log(this.state.scheduleData);
             });
@@ -95,11 +102,14 @@ class Schedule extends Component {
         }
         return (
             <Aux>
-                <div className="row-container">
-                    <div><Link to={routes.LANDING}>Find New Race</Link></div>
+                <div id="message-display">*{this.state.message}</div>
+
+                <div className="container-spaceBetween">
+
+                    <div><Link to={routes.LANDING}><span className="arrow-icon">&#9664;</span> Find New Race</Link></div>
                     <div className="btn-sm warning" onClick={this.writeScheduleToFirebase}>Save this Schedule</div>
+
                 </div>
-                <div>{this.state.message}</div>
                 <table>
                     <tbody>
                 <tr>

@@ -1,166 +1,120 @@
-import React from 'react';
+import React, {Component} from 'react';
+import Day from './Day/Day';
+import firebase from '../../../firebase/firebase';
 
-const week = (props) => {
-    return (
-        <tr>
-            <td className="lrg-text">{props.data.week}</td>
-            <td id={props.data.week + "-day1"}>
-                <div className="cell-container" onClick={() => props.changeValue(props.data.week, 1, props.data[1].workout, props.data[1].time, props.data[1].distance)}><strong
-            >{props.data[1].workout}</strong>
-                    <div className="row-spacebetween">
-                <div>{props.data[1].distance}&nbsp;
-                    miles
-                </div>
-                <div>{props.data[1].time}&nbsp;
-                    min
-                </div></div>
-            </div>
-                <div className="cell-update-container" onClick={() => props.changeValue(props.data.week, 1, props.data[1].workout, props.data[1].time, props.data[1].distance)}>
+class Week extends Component {
+    constructor(props) {
+        super(props);
+    }
 
-                    <input type="number" step="0.01" id="distance" defaultValue={props.data[1].distance}></input><label>mi</label>
-                    <input type="number" step="0.01" id="time" defaultValue={props.data[1].time}></input><label>min</label>
-                    <input type="text" id="workout" defaultValue={props.data[1].workout}></input>
-                    <input type="checkbox" id="completed-checkbox"></input><label htmlFor="completed-checkbox">Completed</label>
-                    <span>X</span>
-                    <button value="Save Run"></button>
-                </div>
+    handleTableDisplay = (week,day) => {
+        const div = document.getElementById(week + "-day" + day);
+        div.classList.add("show-form");
+        const div2 = document.getElementById(week + "-day" + day + "-cell");
+        div2.classList.add("hidden");
+    };
 
-            </td>
-            <td id={props.data.week + "-day2"}>
-                <div className="cell-container" onClick={() => props.changeValue(props.data.week, 2, props.data[2].workout, props.data[2].time, props.data[2].distance)}><strong
-                >{props.data[2].workout}</strong>
-                    <div className="row-spacebetween">
-                    <div>{props.data[2].distance}&nbsp;
-                        miles
-                    </div>
-                    <div>{props.data[2].time}&nbsp;
-                        min
-                    </div>
-                    </div>
-                </div>
-                <div className="cell-update-container" onClick={() => props.changeValue(props.data.week, 2, props.data[2].workout, props.data[2].time, props.data[2].distance)}>
+    handleCheckboxEvent = (isComplete,week,day,time,distance) => {
+        let totalMins = parseFloat(this.props.mins);
+        let totalMiles = parseFloat(this.props.miles);
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                const userId = user.uid;
+                if(isComplete) {
+                    totalMins += parseFloat(time);
+                    totalMiles += parseFloat(distance);
+                }else if (!isComplete) {
+                    totalMins -= time;
+                    totalMiles -= distance;
+                }
 
-                    <input type="number" step="0.01" id="distance" defaultValue={props.data[2].distance}></input><label>mi</label>
-                    <input type="number" step="0.01" id="time" defaultValue={props.data[2].time}></input><label>min</label>
-                    <input type="text" id="workout" defaultValue={props.data[2].workout}></input>
-                    <input type="checkbox" id="completed-checkbox"></input><label htmlFor="completed-checkbox">Completed</label>
-                    <span>X</span>
-                    <button value="Save Run"></button>
-                </div>
-            </td>
+                firebase.database().ref("users/" + userId + "/trainingSchedule/" + week + "/" + day).update({
+                        completed: isComplete
+                    })
+                        .catch(error => {
+                            console.log("There was an error writing to Firebase");
+                        });
+                    firebase.database().ref("users/" + userId).update({
+                        totalMiles: totalMiles,
+                        totalMins: totalMins
+                    })
+                        .catch(error => {
+                            console.log("There was an error writing to Firebase");
+                        });
+                }
+        });
+    };
 
-            <td id={props.data.week + "-day3"}>
-                <div className="cell-container" onClick={() => props.changeValue(props.data.week, 3, props.data[3].workout, props.data[3].time, props.data[3].distance)}><strong
-            >{props.data[3].workout}</strong>
-                    <div className="row-spacebetween">
-                <div>{props.data[3].distance}&nbsp;
-                    miles
-                </div>
-                <div>{props.data[3].time}&nbsp;
-                    min
-                </div>
-                    </div>
-            </div>
-                <div className="cell-update-container" onClick={() => props.changeValue(props.data.week, 3, props.data[3].workout, props.data[3].time, props.data[3].distance)}>
+    componentDidMount(){
+        let raceDate;
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                const userId = user.uid;
+                const userData = firebase.database().ref("users/" + userId);
+                userData.on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    raceDate = new Date(data.startDate);
+                const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+                const date = new Date();
+                const diff = Math.round(Math.abs((date.getTime() - raceDate.getTime()) / (oneDay)));
+                const deadline = new Date(Date.parse(new Date()) + diff * 24 * 60 * 60 * 1000);
+                    const clock = document.getElementById('countDown');
+                    const daysSpan = document.getElementById('day');
 
-                    <input type="number" step="0.01" id="distance" defaultValue={props.data[3].distance}></input><label>mi</label>
-                    <input type="number" step="0.01" id="time" defaultValue={props.data[3].time}></input><label>min</label>
-                    <input type="text" id="workout" defaultValue={props.data[3].workout}></input>
-                    <input type="checkbox" id="completed-checkbox"></input><label htmlFor="completed-checkbox">Completed</label>
-                    <span>X</span>
-                    <button value="Save Run"></button>
-                </div>
-            </td>
+                    const updateClock = () => {
+                        const getTimeRemaining = (endtime) => {
+                            const t = Date.parse(endtime) - Date.parse(new Date());
+                            const days = Math.floor(t / (1000 * 60 * 60 * 24));
+                            return {
+                                'total': t,
+                                'days': days + " days",
+                            };
+                        };
 
-            <td id={props.data.week + "-day4"}><div className="cell-container" onClick={() => props.changeValue(props.data.week, 4, props.data[4].workout, props.data[4].time, props.data[4].distance)}><strong
-            >{props.data[4].workout}</strong>
-                <div className="row-spacebetween">
-                <div>{props.data[4].distance}&nbsp;
-                    miles
-                </div>
-                <div>{props.data[4].time}&nbsp;
-                    min
-                </div>
-                </div>
-            </div>
-                <div className="cell-update-container" onClick={() => props.changeValue(props.data.week, 4, props.data[4].workout, props.data[4].time, props.data[4].distance)}>
+                        const t = getTimeRemaining(deadline);
 
-                    <input type="number" step="0.01" id="distance" defaultValue={props.data[4].distance}></input><label>mi</label>
-                    <input type="number" step="0.01" id="time" defaultValue={props.data[4].time}></input><label>min</label>
-                    <input type="text" id="workout" defaultValue={props.data[4].workout}></input>
-                    <input type="checkbox" id="completed-checkbox"></input><label htmlFor="completed-checkbox">Completed</label>
-                    <span>X</span>
-                    <button value="Save Run"></button>
-                </div>
-            </td>
+                        daysSpan.innerHTML = t.days;
 
-            <td id={props.data.week + "-day5"}><div className="cell-container" onClick={() => props.changeValue(props.data.week, 5, props.data[5].workout, props.data[5].time, props.data[5].distance)}><strong
-            >{props.data[5].workout}</strong>
-                <div className="row-spacebetween">
-                <div>{props.data[5].distance}&nbsp;
-                    miles
-                </div>
-                <div>{props.data[5].time}&nbsp;
-                    min
-                </div>
-                </div>
-            </div>
-                <div className="cell-update-container" onClick={() => props.changeValue(props.data.week, 5, props.data[5].workout, props.data[5].time, props.data[5].distance)}>
+                        if (t.total <= 0) {
+                            clearInterval(timeinterval);
+                        }
+                    };
 
-                    <input type="number" step="0.01" id="distance" defaultValue={props.data[5].distance}></input><label>mi</label>
-                    <input type="number" step="0.01" id="time" defaultValue={props.data[5].time}></input><label>min</label>
-                    <input type="text" id="workout" defaultValue={props.data[5].workout}></input>
-                    <input type="checkbox" id="completed-checkbox"></input><label htmlFor="completed-checkbox">Completed</label>
-                    <span>X</span>
-                    <button value="Save Run"></button>
-                </div>
-            </td>
-
-            <td id={props.data.week + "-day6"}><div className="cell-container" onClick={() => props.changeValue(props.data.week, 6, props.data[6].workout, props.data[6].time, props.data[6].distance)}><strong
-            >{props.data[6].workout}</strong>
-                <div className="row-spacebetween">
-                <div>{props.data[6].distance}&nbsp;
-                    miles
-                </div>
-                <div>{props.data[6].time}&nbsp;
-                    min
-                </div>
-                </div>
-            </div>
-                <div className="cell-update-container" onClick={() => props.changeValue(props.data.week, 7, props.data[7].workout, props.data[7].time, props.data[6].distance)}>
-
-                    <input type="number" step="0.01" id="distance" defaultValue={props.data[6].distance}></input><label>mi</label>
-                    <input type="number" step="0.01" id="time" defaultValue={props.data[6].time}></input><label>min</label>
-                    <input type="text" id="workout" defaultValue={props.data[6].workout}></input>
-                    <input type="checkbox" id="completed-checkbox"></input><label htmlFor="completed-checkbox">Completed</label>
-                    <span>X</span>
-                    <button value="Save Run"></button>
-                </div>
-            </td>
-
-            <td id={props.data.week + "-day7"}><div className="cell-container" onClick={() => props.changeValue(props.data.week, 7, props.data[7].workout, props.data[7].time, props.data[7].distance)}><strong
-            >{props.data[7].workout}</strong>
-                <div className="row-spacebetween">
-                <div>{props.data[7].distance}&nbsp;
-                    miles
-                </div>
-                <div>{props.data[7].time}&nbsp;
-                    min
-                </div>
-                </div>
-            </div>
-                <div className="cell-update-container" onClick={() => props.changeValue(props.data.week, 7, props.data[7].workout, props.data[7].time, props.data[7].distance)}>
-
-                    <input type="number" step="0.01" id="distance" defaultValue={props.data[7].distance}></input><label>mi</label>
-                    <input type="number" step="0.01" id="time" defaultValue={props.data[7].time}></input><label>min</label>
-                    <input type="text" id="workout" defaultValue={props.data[7].workout}></input>
-                    <input type="checkbox" id="completed-checkbox"></input><label htmlFor="completed-checkbox">Completed</label>
-                    <span>X</span>
-                    <button value="Save Run"></button>
-                </div>
-            </td>
-        </tr>
-)
+                    updateClock();
+                    const timeinterval = setInterval(updateClock, 1000);
+                });
+            }
+        });
+    }
+    render()
+    {
+        return (
+            <tr>
+                <td className="lrg-text">{this.props.data.week}</td>
+                <Day data={this.props.data[1]} week={this.props.data.week} day={"1"}
+                     tableDisplayHandler={this.handleTableDisplay}
+                checkboxHandler={this.handleCheckboxEvent}/>
+                <Day data={this.props.data[2]} week={this.props.data.week} day={"2"}
+                     tableDisplayHandler={this.handleTableDisplay}
+                     checkboxHandler={this.handleCheckboxEvent}/>
+                <Day data={this.props.data[3]} week={this.props.data.week} day={"3"}
+                     tableDisplayHandler={this.handleTableDisplay}
+                     checkboxHandler={this.handleCheckboxEvent}/>
+                <Day data={this.props.data[4]} week={this.props.data.week} day={"4"}
+                     tableDisplayHandler={this.handleTableDisplay}
+                     checkboxHandler={this.handleCheckboxEvent}/>
+                <Day data={this.props.data[5]} week={this.props.data.week} day={"5"}
+                     tableDisplayHandler={this.handleTableDisplay}
+                     checkboxHandler={this.handleCheckboxEvent}/>
+                <Day data={this.props.data[6]} week={this.props.data.week} day={"6"}
+                     tableDisplayHandler={this.handleTableDisplay}
+                     checkboxHandler={this.handleCheckboxEvent}/>
+                <Day data={this.props.data[7]} week={this.props.data.week} day={"7"}
+                     tableDisplayHandler={this.handleTableDisplay}
+                     checkboxHandler={this.handleCheckboxEvent}/>
+            </tr>
+        )
+    }
 };
 
-export default week;
+export default Week;
