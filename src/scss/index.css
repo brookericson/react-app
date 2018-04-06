@@ -250,7 +250,7 @@ td {
   padding: 5px; }
 
 tr:nth-child(even) {
-  background: rgba(197, 197, 197, 0.13); }
+  background: #eeeeee; }
 
 td:nth-child(even) {
   border-right: 1px solid black;
