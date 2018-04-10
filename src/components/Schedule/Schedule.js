@@ -22,6 +22,9 @@ class Schedule extends Component {
         const date = new Date();
         const newDate = date.setDate(date.getDate() + daysUntil);
         const d = date.toLocaleDateString();
+        const {
+            history,
+        } = this.props;
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
                const userID = user.uid;
@@ -32,7 +35,7 @@ class Schedule extends Component {
                     totalMins: 0,
                     trainingSchedule
                 });
-                document.getElementById("message-display").innerHTML = "Your schedule has been saved! Check out the training schedule link above to track your training";
+                setTimeout(history.push(routes.SAVED_SCHEDULE),1500);
             }
             else {
                 document.getElementById("message-display").innerHTML = "You must sign in to save a training plan";
