@@ -35,7 +35,7 @@ class Schedule extends Component {
                     totalMins: 0,
                     trainingSchedule
                 });
-                setTimeout(history.push(routes.SAVED_SCHEDULE),3000);
+                setTimeout(history.push(routes.SAVED_SCHEDULE),6000);
             }
             else {
                 document.getElementById("message-display").innerHTML = "You must sign in to save a training plan";
