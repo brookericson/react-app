@@ -22,9 +22,6 @@ class Schedule extends Component {
         const date = new Date();
         const newDate = date.setDate(date.getDate() + daysUntil);
         const d = date.toLocaleDateString();
-        const {
-            history,
-        } = this.props;
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
                const userID = user.uid;
