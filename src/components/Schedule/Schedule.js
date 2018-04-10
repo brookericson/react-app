@@ -32,6 +32,7 @@ class Schedule extends Component {
                     totalMins: 0,
                     trainingSchedule
                 });
+                document.getElementById("message-display").innerHTML = "Your schedule has been saved! Check out the training schedule link above to track your training";
             }
             else {
                 document.getElementById("message-display").innerHTML = "You must sign in to save a training plan";
